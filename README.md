@@ -14,7 +14,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-"Making changes from project"
+"Making changes from git "
 
 
 
