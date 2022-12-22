@@ -19,7 +19,7 @@ class DataIngestion:
     def initiate_data_ingestion(self):
         try:
             logging.info('Exporting data as pandas dataframe')
-            df: pd.DataFrame(get_collection_as_database(database_name = self.data_ingestion_config.database_name , collection_name = self.data_ingestion_config.collection_name))
+            df: pd.DataFrame= utils.get_collection_as_database(database_name = self.data_ingestion_config.database_name , collection_name = self.data_ingestion_config.collection_name)
             logging.info("Replacing NA values with NAN")
             df.replace(to_replace = 'na', value = np.NAN , inplace = True)
 
@@ -27,20 +27,21 @@ class DataIngestion:
             feature_store_dir = os.path.dirname(self.data_ingestion_config.feature_store_file_path)
             os.makedirs(feature_store_dir, exist_ok=True)
             logging.info("Save df to feature store folder")
-            df.to_csv(path_or_buff =self.data_ingestion_config.feature_store_file_path, index = False , header = True)
+            df.to_csv(path_or_buf =self.data_ingestion_config.feature_store_file_path, index = False , header = True)
 
 
             logging.info("Split data into train test split")
-            train_data , test_data = train_test_split(df , test_size =self.data_ingestion_config.test_size)
- 
+            train_df,test_df = train_test_split(df , test_size =self.data_ingestion_config.test_size)
+            
+
             logging.info("Create dataset directory folder if not available")
             #Somewhat doubtful
             dataset_dir = os.path.dirname(self.data_ingestion_config.train_file_path)
-            os.makedirs(dataset_dir, exist_ok = true)
+            os.makedirs(dataset_dir, exist_ok = True)
 
             logging.info("Saving datasets in train and test files")
-            train_df.to_csv(path_or_buff = self.data_ingestion_config.train_file_path, header = True , index = False)
-            test_df.to_csv(path_or_buff  = self.data_ingestion_config.test_file_path, index = False , header= True)
+            train_df.to_csv(path_or_buf = self.data_ingestion_config.train_file_path, header = True , index = False)
+            test_df.to_csv(path_or_buf  = self.data_ingestion_config.test_file_path, index = False , header= True)
 
             #Prepare Artifact
             data_ingestion_artifact = artifact_entity.DataIngestionArtifact(feature_store_file_path = self.data_ingestion_config.feature_store_file_path, train_file_path=self.data_ingestion_config.train_file_path, test_file_path=self.data_ingestion_config.test_file_path)
