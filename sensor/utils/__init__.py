@@ -52,7 +52,7 @@ def convert_cols_to_float(df:pd.DataFrame , exclude_cols:list):
         raise e
 
 
-def save_object(filepath:str , obj:object)->none:
+def save_object(filepath:str , obj:object):
     try:
         logging.info('Entered the save object method of utils')
         os.makedirs(os.path.dirname(filepath), exist_ok = True)

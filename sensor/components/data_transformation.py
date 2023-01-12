@@ -1,6 +1,6 @@
 import os,sys
 from sensor.entity import config_entity
-from sensor.artifact import artifact_entity
+from sensor.entity import artifact_entity
 from sensor.exception import SensorException
 from sensor.logger import logging
 import pandas as pd
@@ -9,8 +9,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import RobustScaler
 from sklearn.preprocessing import LabelEncoder
 from imblearn.combine import SMOTETomek
-
-
+from sensor.config import TARGET_COLUMN
+from sklearn.pipeline import Pipeline
+from sensor import utils
 
 
 class DataTransformation:
@@ -26,7 +27,7 @@ class DataTransformation:
 
 
     @classmethod
-    def get_data_transformer_object(cls)->Pipeline:
+    def get_data_transformer_object(cls):
         try:
             simple_imputer = SimpleImputer(strategy = 'constant' , fill_value = 0)      
             robust_scaler = RobustScaler()
@@ -34,7 +35,7 @@ class DataTransformation:
                 ('Imputer', simple_imputer),
                 ('Scaler', robust_scaler)
             ])
-
+            return pipeline
         except Exception as e:
             raise SensorException(e, sys)
 
@@ -43,8 +44,8 @@ class DataTransformation:
         try:
             logging.info("Initiating Data transformation")
             #Selecting training and testing files
-            train_df = pd.read_csv(artifact_entity.train_file_path)
-            test_df = pd.read_csv(artifact_entity.test_file_path)
+            train_df = pd.read_csv(self.data_ingestion_artifact.train_file_path)
+            test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
 
             #Selelcting input feature from train and test data
             input_feature_train_data = train_df.drop(TARGET_COLUMN , axis =1)
@@ -59,8 +60,8 @@ class DataTransformation:
             label_encoder.fit(target_feature_train_df)
 
             #transformation on target columns 
-            target_feature_train_arr = label_encoder.transform(target_feature_train_arr)
-            target_feature_test_arr = label_encoder.transform(target_feature_test_arr)
+            target_feature_train_arr = label_encoder.transform(target_feature_train_df)
+            target_feature_test_arr = label_encoder.transform(target_feature_test_df)
 
             transformation_pipeline = DataTransformation.get_data_transformer_object()
             transformation_pipeline.fit(input_feature_train_data)
