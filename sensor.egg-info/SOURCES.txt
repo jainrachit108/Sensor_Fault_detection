@@ -1,4 +1,3 @@
-README.md
 setup.py
 sensor/__init__.py
 sensor/config.py
