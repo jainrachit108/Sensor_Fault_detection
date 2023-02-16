@@ -7,7 +7,7 @@ import yaml
 import numpy as np
 import dill
 
-def get_collection_as_dataFrame(database_name : str , collection_name: str):
+def get_collection_as_dataFrame(database_name : str , collection_name: str)->pd.DataFrame:
     """
     Description: This function return collection as dataframe
     =========================================================

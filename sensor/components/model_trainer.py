@@ -34,7 +34,7 @@ class ModelTrainer:
         except Exception as e:
             raise SensorException(e, sys)
 
-    def initiate_model_training(self, )->artifact_entity.ModelTrainerArtifact:
+    def initiate_model_trainer(self, )->artifact_entity.ModelTrainerArtifact:
         try:
             logging.info("Loading training and testing data for Model Training")
             train_arr = utils.load_numpy_array_data(file_path = self.data_transformation_artifact.transformed_train_path)
@@ -65,6 +65,12 @@ class ModelTrainer:
             diff = abs(f1_train_score-f1_test_score)
             if diff>self.model_trainer_config.overfitting_threshold:
                 raise Exception(f"Train and test score diff: {diff} is more than overfitting threshold {self.model_trainer_config.overfitting_threshold}")
+
+            #save the trained model
+            logging.info(f"Saving mode object")
+            utils.save_object(filepath=self.model_trainer_config.model_path, obj=model)
+
+
 
             logging.info("Preparing artifacts")
             model_trainer_artifact = artifact_entity.ModelTrainerArtifact(model_path = self.model_trainer_config.model_path ,

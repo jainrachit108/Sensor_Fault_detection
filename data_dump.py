@@ -6,7 +6,7 @@ from sensor.config import mongo_client
 
 DATABASE_NAME = 'aps'
 COLLECTION_NAME = 'sensor'
-DATA_PATH = 'https://raw.githubusercontent.com/avnyadav/sensor-fault-detection/main/aps_failure_training_set1.csv'
+DATA_PATH = '/config/workspace/aps_failure_training_set1.csv'
 
 
 if __name__ == '__main__':
